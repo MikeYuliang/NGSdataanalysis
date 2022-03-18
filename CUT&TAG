@@ -1,0 +1,8 @@
+trim_galore -q 20 --phred33 --stringency 1 --length 20 -e 0.1 --paired ../CUTTAG/Rawdata/1_R1.fastq.gz ../CUTTAG/Rawdata/1_R2.fastq.gz  --gzip -o ../CUTTAG/Clean/ --cores 20;
+bowtie2 --end-to-end --very-sensitive --no-mixed --no-discordant --phred33 -I 10 -X 700 -p 20 -x ../Bowtie2reference/mm10 -1 ../CUTTAG/Clean/1_R1_val_1.fq.gz -2 ../CUTTAG/Clean/1_R2_val_2.fq.gz -S ../CUTTAG/Bam/1.sam;
+picard SortSam I= ../CUTTAG/Bam/1.sam O= ../CUTTAG/Bam/1_sorted.sam SORT_ORDER=coordinate;picard MarkDuplicates I= ../CUTTAG/Bam/1_sorted.sam O= ../CUTTAG/Bam/1_rmDup.bam REMOVE_DUPLICATES=true METRICS_FILE= ../CUTTAG/Bam/1_rmDup.txt;
+samtools view -S ../CUTTAG/Bam/1.sam > ../CUTTAG/Bam/1.bam -@40;samtools sort -@40 -O bam -o ../CUTTAG/Bam/1_sort.bam ../CUTTAG/Bam/1.bam;samtools index -b ../CUTTAG/Bam/1_sort.bam  -@40 ../CUTTAG/Bam/1_sort.bam.bai 
+bamCoverage -b ../CUTTAG/Bam/1_sort.bam -o ../CUTTAG/Bw/1.bw -p 20;
+computeMatrix reference-point -S ../CUTTAG/Bw/1.bw ../CUTTAG/Bw/2.bw -R ../CUTTAG/1_2.bed -p 20 -b 2000 -a 2000 --missingDataAsZero --referencePoint center -o ../CUTTAG/Total.gz --skipZeros --blackListFileName ../mm10.blacklist.bed
+plotHeatmap -m ../CUTTAG/Total.gz -out ../CUTTAG/Total_referencepoint_center_heatmap.pdf --perGroup --plotType lines --plotFileFormat pdf --colorList 'white,red'
+plotProfile -m ../CUTTAG/Total.gz -out ../CUTTAG/Total.pdf --perGroup --plotHeight 7 --plotWidth 11 --plotType lines --plotFileFormat pdf --colors '#031d66' '#660303'
