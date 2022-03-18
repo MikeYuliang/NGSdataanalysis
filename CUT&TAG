@@ -7,3 +7,6 @@ computeMatrix reference-point -S ../CUTTAG/Bw/1.bw ../CUTTAG/Bw/2.bw -R ../CUTTA
 plotHeatmap -m ../CUTTAG/Total.gz -out ../CUTTAG/Total_referencepoint_center_heatmap.pdf --perGroup --plotType lines --plotFileFormat pdf --colorList 'white,red'
 plotProfile -m ../CUTTAG/Total.gz -out ../CUTTAG/Total.pdf --perGroup --plotHeight 7 --plotWidth 11 --plotType lines --plotFileFormat pdf --colors '#031d66' '#660303'
 macs2 callpeak -t ../CUTTAG/Bam/1_sort.bam  --outdir ../CUTTAG/macs2_callpeak/ -n 1 -B --broad -g 1.87e9
+bed2pos.pl -o ../CUTTAG/macs2_callpeak/1.txt ../CUTTAG/macs2_callpeak/1.bed;
+MergePeaks ../CUTTAG/macs2_callpeak/1.txt ../CUTTAG/macs2_callpeak/2.txt > ../CUTTAG/macs2_callpeak/1_2.txt
+pos2bed.pl -o ../CUTTAG/macs2_callpeak/1_2.bed ../CUTTAG/macs2_callpeak/1_2.txt
