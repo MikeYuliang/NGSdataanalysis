@@ -1,0 +1,8 @@
+# 1 as an example of the files we used for analysis
+cd ~/miniconda3/pkgs/trimmomatic-0.39-1/share/trimmomatic-0.39-1/adapters/
+trimmomatic PE -threads 40 -phred33 ../ActivatedB/Rawdata/1_R1.fq.gz ../ActivatedB/Rawdata/1_R2.fq.gz  -baseout ../ActivatedB/Clean/1.fastq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36;
+
+STAR --runMode genomeGenerate --genomeDir ../STAR_index/ --genomeFastaFiles ../GRCm38.p6.genome.fa --runThreadN 40 --limitGenomeGenerateRAM 99687447936  
+STAR --runThreadN 20 --genomeDir ../STAR_index/ --readFilesIn ../ActivatedB/clean/1_1P.fastq ../ActivatedB/clean/1_2P.fastq --outSAMtype BAM Unsorted --outFileNamePrefix ../ActivatedB/Bam/1;
+
+htseq-count ../ActivatedB/Bam/1Aligned.out.bam ../gencode.vM25.annotation.gtf -n 20 -c ../ActivatedB/counts/1.tsv --additional-attr gene_name;
